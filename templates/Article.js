@@ -13,7 +13,7 @@ const ArticleSchema = Schema({
     type: Date,
     default: Date.now,
   },
-  img: {
+  image: {
     type: String,
     default: "default.png",
   },
