@@ -1,8 +1,9 @@
 const { connection } = require("./database/connection");
 const express = require("express");
 const cors = require("cors");
+const dotenv = require("dotenv");
 
-const PORT = 3000;
+dotenv.config();
 
 console.log("App started.");
 
@@ -33,6 +34,6 @@ app.get("/", (req, res) => {
 });
 
 //create server
-app.listen(PORT, () => {
-  console.log(`Server running on port: ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port: ${process.env.PORT}`);
 });
