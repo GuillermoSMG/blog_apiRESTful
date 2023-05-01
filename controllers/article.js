@@ -15,6 +15,7 @@ const saveArticle = (req, res) => {
   }
 
   const article = new Article(parameters);
+  article.user = req.user.id
 
   article.save((err, articleSaved) => {
     if (err || !articleSaved) {
@@ -33,13 +34,11 @@ const saveArticle = (req, res) => {
 };
 
 const getArticles = (req, res) => {
-  let query = Article.find({});
+  const page = req.params?.page || 1
+  const itemsPerPage = 10;
 
-  if (req.params.latest) {
-    query.limit(5);
-  }
-
-  query.sort({ date: -1 }).exec((err, articles) => {
+  Article.find({}).sort({ date: -1 })
+  .paginate(page, itemsPerPage,(err, articles, total) => {
     if (err || !articles) {
       return res.status(404).json({
         status: "error",
@@ -49,8 +48,11 @@ const getArticles = (req, res) => {
 
     return res.status(200).send({
       status: "success",
-      param: req.params.latest,
+      param: req.params.page,
       articles,
+      page,
+      pages: Math.ceil(total / itemsPerPage),
+      itemsPerPage,
     });
   });
 };
@@ -76,7 +78,7 @@ const getAnArticle = (req, res) => {
 const deleteArticle = (req, res) => {
   let id = req.params.id;
 
-  Article.findOneAndDelete({ _id: id }, (err, deletedArt) => {
+  Article.findOneAndDelete({user: req.user.id ,_id: id }, (err, deletedArt) => {
     if (err || !deletedArt) {
       return res.status(509).json({
         status: "error",
@@ -109,7 +111,7 @@ const updateArticle = (req, res) => {
     new: true,
   };
 
-  Article.findOneAndUpdate({ _id: id }, parameters, options, (err, updated) => {
+  Article.findOneAndUpdate({user: req.user.id, _id: id }, parameters, options, (err, updated) => {
     if (err || !updated) {
       return res.status(500).json({
         status: "error",
@@ -158,7 +160,7 @@ const uploadImage = (req, res) => {
     };
 
     Article.findOneAndUpdate(
-      { _id: id },
+      { user: req.user.id,_id: id },
       { image: req.file.filename },
       options,
       (err, updated) => {

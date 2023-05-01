@@ -3,6 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
+const article_routes = require("./routes/article");
+const user_routes = require("./routes/user");
+
 dotenv.config();
 
 console.log("App started.");
@@ -22,9 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 
 //create routes
 
-const article_routes = require("./routes/article");
 
 app.use("/api", article_routes);
+app.use("/api/user", user_routes);
 
 app.get("/", (req, res) => {
   return res.status(200).send({
