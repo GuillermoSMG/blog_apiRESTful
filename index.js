@@ -30,12 +30,13 @@ app.use("/api/user", user_routes);
 
 app.get("/", (req, res) => {
   return res.status(200).send({
-    titulo: "Anaconda",
-    categoria: "aventura",
+    message: "hola",
   });
 });
 
+const port = process.env.PORT || 3000;
+
 //create server
-app.listen(process.env.PORT, () => {
+app.listen(port, () => {
   console.log(`Server running on port: ${process.env.PORT}`);
 });
