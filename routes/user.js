@@ -17,15 +17,16 @@ const storage = multer.diskStorage({
 const uploads = multer({ storage });
 
 //define routes
-router.post("/signup", UserController.signUp);
-router.post("/login", UserController.logIn);
-router.get("/profile/:id", auth, UserController.profile);
-router.get("/user/:id/:page?", auth, UserController.user);
-router.put("/update", auth, UserController.updateUser);
-router.post("/upload", [auth, uploads.single("file0")], UserController.upload);
-router.get("/avatar/:file", auth, UserController.avatar);
-router.get("/counters", auth, UserController.counters);
+router.post("/", UserController.signUp);
+router.get("/:id", auth, UserController.profile);
+router.patch("/", auth, UserController.updateUser);
 
+router.post("/upload", [auth, uploads.single("file0")], UserController.upload);
+// 👇 returns articles by an user
+router.get("/articles/:id/:page?", auth, UserController.user);
+router.get("/articles-amount", auth, UserController.counters);
+router.get("/avatar/:file", auth, UserController.avatar);
+router.post("/login", UserController.logIn);
 
 //export router
 module.exports = router;

@@ -3,7 +3,7 @@ const { Schema, model, default: mongoose } = require("mongoose");
 const ArticleSchema = Schema({
   user: {
     type: mongoose.Schema.ObjectId,
-    ref: 'User'
+    ref: "User",
   },
   title: {
     type: String,
@@ -19,7 +19,7 @@ const ArticleSchema = Schema({
   },
   image: {
     type: String,
-    default: "default.png",
+    default: null,
   },
 });
 

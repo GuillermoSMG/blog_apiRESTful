@@ -25,8 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //create routes
 
-
-app.use("/api", article_routes);
+app.use("/api/articles", article_routes);
 app.use("/api/user", user_routes);
 
 app.get("/", (req, res) => {

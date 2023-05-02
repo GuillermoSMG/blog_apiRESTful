@@ -10,18 +10,18 @@ const saveArticle = (req, res) => {
   } catch (err) {
     return res.status(400).json({
       status: "Error",
-      mensaje: "Faltan datos.",
+      message: "Faltan datos.",
     });
   }
 
   const article = new Article(parameters);
-  article.user = req.user.id
+  article.user = req.user.id;
 
   article.save((err, articleSaved) => {
     if (err || !articleSaved) {
       return res.status(400).json({
         status: "Error",
-        mensaje: "No se ha guardado el artículo.",
+        message: "No se ha guardado el artículo.",
       });
     }
 
@@ -34,27 +34,28 @@ const saveArticle = (req, res) => {
 };
 
 const getArticles = (req, res) => {
-  const page = req.params?.page || 1
+  const page = req.params?.page || 1;
   const itemsPerPage = 10;
 
-  Article.find({}).sort({ date: -1 })
-  .paginate(page, itemsPerPage,(err, articles, total) => {
-    if (err || !articles) {
-      return res.status(404).json({
-        status: "error",
-        message: "No se han encontrado artículos.",
-      });
-    }
+  Article.find({})
+    .sort({ date: -1 })
+    .paginate(page, itemsPerPage, (err, articles, total) => {
+      if (err || !articles) {
+        return res.status(404).json({
+          status: "error",
+          message: "No se han encontrado artículos.",
+        });
+      }
 
-    return res.status(200).send({
-      status: "success",
-      param: req.params.page,
-      articles,
-      page,
-      pages: Math.ceil(total / itemsPerPage),
-      itemsPerPage,
+      return res.status(200).send({
+        status: "success",
+        param: req.params.page,
+        articles,
+        page,
+        pages: Math.ceil(total / itemsPerPage),
+        itemsPerPage,
+      });
     });
-  });
 };
 
 const getAnArticle = (req, res) => {
@@ -78,20 +79,23 @@ const getAnArticle = (req, res) => {
 const deleteArticle = (req, res) => {
   let id = req.params.id;
 
-  Article.findOneAndDelete({user: req.user.id ,_id: id }, (err, deletedArt) => {
-    if (err || !deletedArt) {
-      return res.status(509).json({
-        status: "error",
-        message: "No se ha podido eliminar el artículo.",
+  Article.findOneAndDelete(
+    { user: req.user.id, _id: id },
+    (err, deletedArt) => {
+      if (err || !deletedArt) {
+        return res.status(509).json({
+          status: "error",
+          message: "No se ha podido eliminar el artículo.",
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        deletedArt,
+        message: "Se ha eliminado el artículo.",
       });
     }
-
-    return res.status(200).json({
-      status: "success",
-      deletedArt,
-      message: "Se ha eliminado el artículo.",
-    });
-  });
+  );
 };
 
 const updateArticle = (req, res) => {
@@ -103,7 +107,7 @@ const updateArticle = (req, res) => {
   } catch (err) {
     return res.status(400).json({
       status: "Error",
-      mensaje: "Faltan datos.",
+      message: "Faltan datos.",
     });
   }
 
@@ -111,20 +115,25 @@ const updateArticle = (req, res) => {
     new: true,
   };
 
-  Article.findOneAndUpdate({user: req.user.id, _id: id }, parameters, options, (err, updated) => {
-    if (err || !updated) {
-      return res.status(500).json({
-        status: "error",
-        message: "Error al actualizar.",
+  Article.findOneAndUpdate(
+    { user: req.user.id, _id: id },
+    parameters,
+    options,
+    (err, updated) => {
+      if (err || !updated) {
+        return res.status(500).json({
+          status: "error",
+          message: "Error al actualizar.",
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        updated,
+        message: "Se ha actualizado el artículo.",
       });
     }
-
-    return res.status(200).json({
-      status: "success",
-      updated,
-      message: "Se ha actualizado el artículo.",
-    });
-  });
+  );
 };
 
 const uploadImage = (req, res) => {
@@ -160,7 +169,7 @@ const uploadImage = (req, res) => {
     };
 
     Article.findOneAndUpdate(
-      { user: req.user.id,_id: id },
+      { user: req.user.id, _id: id },
       { image: req.file.filename },
       options,
       (err, updated) => {
