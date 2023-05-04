@@ -99,6 +99,7 @@ const logIn = (req, res) => {
         id: user._id,
         name: user.name,
         nickname: user.nickname,
+        role: user.role,
       },
       token,
     });
@@ -284,32 +285,32 @@ const counters = async (req, res) => {
 };
 
 const user = (req, res) => {
-    //get user id
-    let userId = req.params.id;
-    //page number
-    let page = req.params?.page || 1;
-    const itemsPerPage = 5;
-    //find, populate, paginate
-    Article.find({ user: userId })
-      .sort("-created_at")
-      .populate("user", "-password -__v -role -email")
-      .paginate(page, itemsPerPage, (err, articles, total) => {
-        if (err || !articles || articles.length < 1)
-          return res.status(404).send({
-            status: "error",
-            message: "No se han encontrado artículos.",
-          });
-  
-        return res.status(200).send({
-          status: "success",
-          message: "Lista de artículos.",
-          page,
-          pages: Math.ceil(total / itemsPerPage),
-          itemsPerPage,
-          articles,
+  //get user id
+  let userId = req.params.id;
+  //page number
+  let page = req.params?.page || 1;
+  const itemsPerPage = 5;
+  //find, populate, paginate
+  Article.find({ user: userId })
+    .sort("-created_at")
+    .populate("user", "-password -__v -role -email")
+    .paginate(page, itemsPerPage, (err, articles, total) => {
+      if (err || !articles || articles.length < 1)
+        return res.status(404).send({
+          status: "error",
+          message: "No se han encontrado artículos.",
         });
+
+      return res.status(200).send({
+        status: "success",
+        message: "Lista de artículos.",
+        page,
+        pages: Math.ceil(total / itemsPerPage),
+        itemsPerPage,
+        articles,
       });
-  };
+    });
+};
 
 module.exports = {
   signUp,
@@ -319,5 +320,5 @@ module.exports = {
   upload,
   avatar,
   counters,
-  user
+  user,
 };
