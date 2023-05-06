@@ -230,7 +230,7 @@ const search = (req, res) => {
       if (err || !findArticles || findArticles.length <= 0) {
         return res.status(404).json({
           status: "error",
-          message: "No se ha encontrado el artículo.",
+          message: "No se han encontrado artículos.",
         });
       }
 

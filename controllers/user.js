@@ -20,10 +20,7 @@ const signUp = (req, res) => {
   }
   //control duplicate users
   User.find({
-    $or: [
-      { email: params.email.toLowerCase() },
-      { nickname: params.nickname.toLowerCase() },
-    ],
+    $or: [{ email: params.email }, { nickname: params.nickname }],
   }).exec(async (err, users) => {
     if (err)
       return res.status(500).json({
@@ -33,7 +30,7 @@ const signUp = (req, res) => {
 
     if (users && users.length >= 1) {
       return res.status(400).send({
-        status: "success",
+        status: "error",
         message: "Nickname o Email ya registrados.",
       });
     }
@@ -76,7 +73,7 @@ const logIn = (req, res) => {
   //search user at db
   User.findOne({ email: params.email }).exec((err, user) => {
     if (err || !user) {
-      return res.status(404).send({
+      return res.status(400).send({
         status: "error",
         message: "Usuario inexistente.",
       });
